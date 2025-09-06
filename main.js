@@ -258,10 +258,9 @@
   }
 
   function clearRows(rows) {
-    // rows は昇順/降順問わず対応
-    const sorted = rows.slice().sort((a,b) => a - b);
-    for (let i = 0; i < sorted.length; i++) {
-      const y = sorted[i] - i; // 1行消すごとに上から詰まる
+    // インデックスシフトを避けるため降順で削除
+    const sortedDesc = rows.slice().sort((a, b) => b - a);
+    for (const y of sortedDesc) {
       board.splice(y, 1);
       board.unshift(Array.from({ length: COLS }, () => null));
     }
@@ -655,8 +654,9 @@
     if (now >= lineClearEffect.endAt) {
       lineClearEffect.active = false;
       updateParticles.prev = 0;
-      // 実際に行削除
-      clearRows(lineClearEffect.rows);
+      // 実際に行削除（念のため現時点でフルラインを再計算して全て消す）
+      const rowsNow = getFullRows();
+      if (rowsNow.length > 0) clearRows(rowsNow);
       // 次のピースへ
       current = nextPiece || getRandomTetromino();
       nextPiece = getRandomTetromino();
