@@ -266,6 +266,18 @@
     }
   }
 
+  // 連続的にフルラインがなくなるまで削除（安全策）
+  function clearAllFullRows() {
+    let total = 0;
+    while (true) {
+      const rows = getFullRows();
+      if (!rows.length) break;
+      clearRows(rows);
+      total += rows.length;
+    }
+    return total;
+  }
+
   function hardDrop() {
     if (!current) return;
     while (!collides(current.shape, current.x, current.y + 1)) {
@@ -654,9 +666,8 @@
     if (now >= lineClearEffect.endAt) {
       lineClearEffect.active = false;
       updateParticles.prev = 0;
-      // 実際に行削除（念のため現時点でフルラインを再計算して全て消す）
-      const rowsNow = getFullRows();
-      if (rowsNow.length > 0) clearRows(rowsNow);
+      // 実際に行削除（フルラインが無くなるまで繰り返し）
+      clearAllFullRows();
       // 次のピースへ
       current = nextPiece || getRandomTetromino();
       nextPiece = getRandomTetromino();
