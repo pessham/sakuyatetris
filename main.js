@@ -438,6 +438,30 @@
 
   // 画像ディレクトリを探索してプリロード
   async function discoverAndPreloadImages() {
+    const loadOne = (src) => new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null); // 個別エラーは無視
+      img.src = src;
+    });
+
+    // 1) Netlify 等での本番運用: manifest.json を優先
+    try {
+      const res = await fetch(IMAGE_DIR + 'manifest.json', { cache: 'no-cache' });
+      if (res.ok) {
+        const list = await res.json(); // ["file1.png", ...]
+        if (Array.isArray(list) && list.length > 0) {
+          const paths = list.map(name => (name.startsWith('http') ? name : IMAGE_DIR + name));
+          const results = await Promise.all(paths.map(loadOne));
+          loadedImages = results.filter(Boolean);
+          if (loadedImages.length > 0) return;
+        }
+      }
+    } catch (_ignore) {
+      // manifest が無い/失敗 → フォールバックへ
+    }
+
+    // 2) ローカル開発向けフォールバック: ディレクトリ一覧をパース
     try {
       const res = await fetch(IMAGE_DIR, { cache: 'no-cache' });
       if (!res.ok) throw new Error('failed to fetch images directory');
@@ -450,20 +474,12 @@
       const imagePaths = links
         .filter(href => !href.startsWith('?'))
         .filter(href => !href.startsWith('../'))
-        .filter(href => IMAGE_EXTS.some(ext => href.toLowerCase().endsWith(ext)) )
+        .filter(href => IMAGE_EXTS.some(ext => href.toLowerCase().endsWith(ext)))
         .map(href => (href.startsWith('http') ? href : IMAGE_DIR + href));
-
-      const loadOne = (src) => new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => resolve(null); // 個別エラーは無視
-        img.src = src;
-      });
 
       const results = await Promise.all(imagePaths.map(loadOne));
       loadedImages = results.filter(Boolean);
-    } catch (e) {
-      // ディレクトリ一覧が取得できない環境（ローカルファイル等）では無視
+    } catch (_e) {
       loadedImages = [];
     }
   }
