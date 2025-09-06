@@ -1,0 +1,26 @@
+# Netlify configuration for a static site
+# Project: CryptoNinja Sakuya Tetris
+
+[build]
+  publish = "."
+  # No build command needed for pure static assets
+  command = ""
+
+# Set helpful headers
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Optional: redirect 404s to index if needed (keep normal 404 for now)
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200

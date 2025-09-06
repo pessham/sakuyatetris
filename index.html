@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>テトリス（四角ランダム表示）</title>
+    <link rel="stylesheet" href="style.css?v=3" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>テトリス デモ</h1>
+      <p class="subtitle">画像テクスチャ付きテトリス（images/ を自動検出・なければ四角）</p>
+    </header>
+
+    <main class="container">
+      <section class="stage">
+        <canvas id="stage" width="300" height="600" aria-label="ゲームフィールド" role="img"></canvas>
+      </section>
+      <section class="next-panel" aria-label="次のテトリミノ">
+        <h3 class="next-title">次の忍務</h3>
+        <canvas id="next" width="120" height="120" aria-label="ネクストピース" role="img"></canvas>
+      </section>
+      <section class="controls">
+        <button id="btn-restart">リスタート (R)</button>
+      </section>
+    </main>
+    
+    <!-- Start Overlay -->
+    <div id="overlay-start" class="overlay visible" aria-hidden="false">
+      <div class="panel">
+        <h2>クリプトニンジャ咲耶テトリス</h2>
+        <p>画像テクスチャ付きテトリス</p>
+        <button id="btn-start" class="btn-primary">忍務開始</button>
+        <p class="hint">操作: ← → 移動 / ↑ ハードドロップ / ↓ ソフトドロップ / Space 回転 / R リスタート</p>
+      </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="overlay-gameover" class="overlay" aria-hidden="true">
+      <div class="panel">
+        <h2>忍務失敗</h2>
+        <button id="btn-restart2" class="btn-primary">主人公は何度でも立ち上がるの！</button>
+      </div>
+    </div>
+
+    <!-- Speech Bubble for line clear quotes -->
+    <div id="speech-bubble" class="speech-bubble" aria-live="polite" aria-atomic="true"></div>
+
+    <footer class="footer">
+      <div class="help-fixed">操作: ← → 移動 / ↑ ハードドロップ / ↓ ソフトドロップ / Space 回転 / R リスタート</div>
+      <small class="copyright">© 2025 Tetris Demo</small>
+    </footer>
+
+    <script defer src="main.js"></script>
+  </body>
+</html>

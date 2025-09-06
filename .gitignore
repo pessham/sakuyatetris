@@ -1,0 +1,16 @@
+# Node & tooling caches (even though this is a static site, safe to ignore)
+node_modules/
+.DS_Store
+.tmp/
+.cache/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor
+.vscode/
+.idea/
